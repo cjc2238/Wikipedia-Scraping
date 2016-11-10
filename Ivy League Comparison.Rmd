@@ -1,0 +1,91 @@
+---
+title: "Compare Ivy Schools"
+author: "C"
+date: "November 10, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#################################################################################################
+## Load your required package libraries - just load all of these as default always and forever ##
+#################################################################################################
+```{r}
+x <- c("plyr", "dplyr", "stringr", "lubridate", "jsonlite", "httr", "xml2", "rvest", "devtools", "ggmap", "networkD3", "RSelenium", "pageviews", "aRxiv", "twitteR", "streamR", "scales", "gridExtra","tm","wordcloud","RCurl","ROAuth","SnowballC")
+lapply(x, require, ch = T)
+```
+##########################################################################
+## Scrape the data off of wikipedia for Ivy Schools  for the year 2016 ##
+#########################################################################
+Set Package
+
+```{r}
+ls("package:pageviews")
+```
+
+Brown University
+```{r}
+brown_views <- article_pageviews(project = "en.wikipedia", article = "Brown University", user_type = "user", start = "2016010100", end = "2016111000")
+```
+Columbia University
+```{r}
+columbia_views <- article_pageviews(project = "en.wikipedia", article = "Columbia University", user_type = "user", start = "2016010100", end = "2016111000")
+```
+Cornell University
+```{r}
+cornell_views <- article_pageviews(project = "en.wikipedia", article = "Cornell University", user_type = "user", start = "2016010100", end = "2016111000")
+```
+Dartmouth College
+```{r}
+dartmouth_views <- article_pageviews(project = "en.wikipedia", article = "Dartmouth College", user_type = "user", start = "2016010100", end = "2016111000")
+```
+Harvard University
+```{r}
+harvard_views <- article_pageviews(project = "en.wikipedia", article = "Harvard University", user_type = "user", start = "2016010100", end = "2016111000")
+```
+University of Pennsylvania
+```{r}
+penn_views <- article_pageviews(project = "en.wikipedia", article = "University of Pennsylvania", user_type = "user", start = "2016010100", end = "2016111000")
+```
+Princeton University
+```{r}
+princeton_views <- article_pageviews(project = "en.wikipedia", article = "Princeton University", user_type = "user", start = "2016010100", end = "2016111000")
+```
+Yale University
+```{r}
+yale_views <- article_pageviews(project = "en.wikipedia", article = "Yale University", user_type = "user", start = "2016010100", end = "2016111000")
+```
+
+###############################################
+## Add new school variable to data frames ##
+###############################################
+```{r}
+brown_views$School = "Brown"
+columbia_views$School = "Columbia University"
+cornell_views$School = "Cornell University"
+dartmouth_views$School = "Dartmouth College"
+harvard_views$School = "Harvard University"
+penn_views$School = "University of Pennsylvania"
+princeton_views$School = "Princeton University"
+yale_views$School = "Yale University"
+```
+###############################
+## Bind Data Frames together ##
+###############################
+```{r}
+df = rbind(brown_views, columbia_views, cornell_views, dartmouth_views, harvard_views, penn_views, princeton_views, yale_views)
+df$timestamp = as.numeric(gsub("-","",as.character(df$date)))
+```
+##################
+## Create Plots ##
+##################
+Line Graph with fill geom 
+
+```{r}
+ggplot(data = df, aes(date, views, color=School)) + geom_smooth() + geom_point(size=.8) + scale_y_log10()+
+    scale_fill_hue(c=0, l=360) + labs(list(title = "Number of Ivy League Page Views on Wikipedia in 2016", x = "Date", y = "Number of Views (Daily)")) 
+```
+
