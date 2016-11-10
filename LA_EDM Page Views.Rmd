@@ -1,0 +1,54 @@
+---
+title: "Learning Analytics Popularity"
+author: "C"
+date: "November 10, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#################################################################################################
+## Load your required package libraries - just load all of these as default always and forever ##
+#################################################################################################
+```{r}
+x <- c("plyr", "dplyr", "stringr", "lubridate", "jsonlite", "httr", "xml2", "rvest", "devtools", "ggmap", "networkD3", "RSelenium", "pageviews", "aRxiv", "twitteR", "streamR", "scales", "gridExtra","tm","wordcloud","RCurl","ROAuth","SnowballC")
+lapply(x, require, ch = T)
+```
+###############################################################################
+## Scrape the data off of wikipedia for Learning Analytics for the year 2016 ##
+###############################################################################
+```{r}
+ls("package:pageviews")
+LA_views <- article_pageviews(project = "en.wikipedia", article = "Learning Analytics", user_type = "user", start = "2016010100", end = "2016111000")
+```
+#################################################################################
+## Scrape the data off wikipedia for Educational Data Mining for the year 2016 ##
+#################################################################################
+```{r}
+EDM_views <- article_pageviews(project = "en.wikipedia", article = "Educational Data Mining", user_type = "user", start = "2016010100", end = "2016111000")
+```
+###############################################
+## Add new candidate variable to data frames ##
+###############################################
+```{r}
+LA_views$Technique = "Learning Analytics"
+EDM_views$Technique = "Educational Data Mining"
+```
+###############################
+## Bind Data Frames together ##
+###############################
+```{r}
+df = rbind(LA_views, EDM_views)
+df$timestamp = as.numeric(gsub("-","",as.character(df$date)))
+
+```
+##################
+## Create Plots ##
+##################
+Line Graph with fill geom 
+
+```{r}
+ggplot(data = df, aes(date,views, color=Technique)) + geom_line(size=1) + scale_y_continuous(labels = comma) + geom_area(aes(fill=Technique)) + labs(list(title = "Number of EDM and LA Page Views on Wikipedia in 2016", x = "Date", y = "Number of Views")) 
+```
