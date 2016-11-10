@@ -21,13 +21,13 @@ lapply(x, require, ch = T)
 ###############################################################################
 ```{r}
 ls("package:pageviews")
-LA_views <- article_pageviews(project = "en.wikipedia", article = "Learning Analytics", user_type = "user", start = "2016010100", end = "2016111000")
+LA_views <- article_pageviews(project = "en.wikipedia", article = "Learning analytics", user_type = "user", start = "2016010100", end = "2016111000")
 ```
 #################################################################################
 ## Scrape the data off wikipedia for Educational Data Mining for the year 2016 ##
 #################################################################################
 ```{r}
-EDM_views <- article_pageviews(project = "en.wikipedia", article = "Educational Data Mining", user_type = "user", start = "2016010100", end = "2016111000")
+EDM_views <- article_pageviews(project = "en.wikipedia", article = "Educational data mining", user_type = "user", start = "2016010100", end = "2016111000")
 ```
 ###############################################
 ## Add new candidate variable to data frames ##
@@ -50,5 +50,5 @@ df$timestamp = as.numeric(gsub("-","",as.character(df$date)))
 Line Graph with fill geom 
 
 ```{r}
-ggplot(data = df, aes(date,views, color=Technique)) + geom_line(size=1) + scale_y_continuous(labels = comma) + geom_area(aes(fill=Technique)) + labs(list(title = "Number of EDM and LA Page Views on Wikipedia in 2016", x = "Date", y = "Number of Views")) 
+ggplot(data = df, aes(date,views, color=Technique)) + geom_point(size=1) + geom_line(size=1, alpha=.3) + scale_y_continuous(labels = comma) + labs(list(title = "Number of EDM and LA Page Views on Wikipedia in 2016", x = "Date", y = "Number of Views (Daily)")) 
 ```
